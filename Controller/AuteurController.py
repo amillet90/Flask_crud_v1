@@ -2,26 +2,29 @@ import re
 
 from flask import *
 
-from app import db
-from Entity.Auteur import Auteur
+from Model import Auteur, Oeuvre
 
 c = Blueprint('auteur', __name__, url_prefix='/auteur')
 
 
 @c.route('/show')
 def show():
-    return render_template('auteur/showAuteurs.html.jj2', auteurs=Auteur.query.all())
+    return render_template('auteur/showAuteurs.html.jj2', auteurs=Auteur.list())
 
 
 @c.route('/supprimer/<int:id>', methods=['GET'])
 def supprimer(id):
-    auteur = Auteur.query.filter_by(id=id).first_or_404()
+    auteur = Auteur.get(id)
 
-    if auteur.oeuvres:
-        return render_template('auteur/ErrorDeleteAuteur.html.jj2', nombre=len(auteur.oeuvres)), 400
+    if not auteur:
+        abort(404)
 
-    db.session.delete(auteur)
-    db.session.commit()
+    oeuvres = Oeuvre.find_by(id)
+
+    if oeuvres:
+        return render_template('auteur/ErrorDeleteAuteur.html.jj2', nombre=len(oeuvres)), 400
+
+    Auteur.delete(id)
 
     return redirect(url_for('auteur.show'))
 
@@ -34,10 +37,7 @@ def ajouter():
     valid, errors = valider_form()
 
     if valid:
-        auteur = Auteur(prenom=request.form['prenom'],
-                        nom=request.form['nom'])
-        db.session.add(auteur)
-        db.session.commit()
+        auteur = Auteur.insert(request.form['prenom'], request.form['nom'])
 
         return redirect(url_for('auteur.show'))
     else:
@@ -46,7 +46,10 @@ def ajouter():
 
 @c.route('/modifier/<int:id>', methods=['GET', 'POST'])
 def modifier(id):
-    auteur = Auteur.query.filter_by(id=id).first_or_404()
+    auteur = Auteur.get(id)
+
+    if not auteur:
+        abort(404)
 
     if request.method == 'GET':
         return render_template('auteur/editAuteur.html.jj2', auteur=auteur,
@@ -55,9 +58,7 @@ def modifier(id):
     valid, errors = valider_form()
 
     if valid:
-        auteur.prenom = request.form['prenom']
-        auteur.nom = request.form['nom']
-        db.session.commit()
+        Auteur.update(id, request.form['prenom'], request.form['nom'])
 
         return redirect(url_for('auteur.show'))
     else:

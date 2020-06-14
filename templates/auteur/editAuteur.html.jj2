@@ -1,6 +1,6 @@
 {% extends "layout.html.jj2" %}
 
-{% block title %}Modifier auteur {{ auteur.id }}{% endblock %}
+{% block title %}Modifier auteur {{ auteur['idAuteur'] }}{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -19,13 +19,13 @@
                 <legend>Modifier un Auteur</legend>
 
                 <label>Nom</label>
-                <input name="nom" type="text" size="18" value="{{ auteur.nom }}">
+                <input name="nom" type="text" size="18" value="{{ auteur['nomAuteur'] }}">
                 {% if 'nom' in errors %}
                     <small class="error">{{ errors['nom'] }}</small>
                 {% endif %}
 
                 <label>Prénom</label>
-                <input name="prenom" type="text" size="18" value="{{ auteur.prenom }}">
+                <input name="prenom" type="text" size="18" value="{{ auteur['prenomAuteur'] }}">
                 {% if 'prenom' in errors %}
                     <small class="error">{{ errors['prenom'] }}</small>
                 {% endif %}

@@ -7,21 +7,19 @@
         <table border="2">
             <caption>Recapitulatif des Auteurs</caption>
             <thead>
-                <tr><th>nom</th><th>prenom</th><th>nombre d'oeuvres</th><th>opérations</th></tr>
+                <tr><th>nom</th><th>prenom</th><th>opérations</th></tr>
             </thead>
             <tbody>
                 {% if auteurs %}
                     {% for auteur in auteurs %}
                         <tr><td>
-                            {{ auteur.nom }}
+                            {{ auteur['nomAuteur'] }}
                         </td><td>
-                            {{ auteur.prenom }}
-                        </td><td>
-                            {{ auteur.oeuvres|length }}
+                            {{ auteur['prenomAuteur'] }}
                         </td>
                         <td>
-                            <a href="{{ url_for('auteur.modifier', id=auteur.id) }}">modifier</a>
-                            <a href="{{ url_for('auteur.supprimer', id=auteur.id) }}">supprimer</a>
+                            <a href="{{ url_for('auteur.modifier', id=auteur['idAuteur']) }}">modifier</a>
+                            <a href="{{ url_for('auteur.supprimer', id=auteur['idAuteur']) }}">supprimer</a>
                         </td>
                         </tr>
                     {% endfor %}
