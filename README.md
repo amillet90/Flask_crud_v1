@@ -58,11 +58,3 @@ MYSQL_DATABASE = 'detabesu'
 MYSQL_USERNAME = 'soryuu'
 MYSQL_PASSWORD = 'passwort'
 ```
-
-### Initialiser le BDD
-
-Pour initialiser le BDD avec les éntités, taper cette commande :
-
-```shell
-$ flask create-all
-```
