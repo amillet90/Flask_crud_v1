@@ -1,11 +1,11 @@
 <label>Titre
-    <input name="titre"  type="text"  size="18" value="{{ oeuvre.titre if oeuvre else '' }}"/>
+    <input name="titre"  type="text"  size="18" value="{{ oeuvre['titreOeuvre'] if oeuvre else '' }}"/>
     {% if 'titre' in errors %}
         <small class="error">{{ errors['titre'] }}</small>
     {% endif %}
 </label>
 <label>date de parution
-    <input name="dateParution"  type="text"  size="18" value="{{ oeuvre.dateParution if oeuvre else '' }}"/>
+    <input name="dateParution"  type="text"  size="18" value="{{ oeuvre['dateParutionOeuvre'] if oeuvre else '' }}"/>
     {% if 'dateParution' in errors %}
         <small class="error">{{ errors['dateParution'] }}</small>
     {% endif %}
@@ -17,9 +17,9 @@
         <option value="">Saisir une valeur</option>
     {% endif %}
     {% for auteur in auteurs %}
-        <option value="{{ auteur.id }}"
-                {% if oeuvre and auteur.idAuteur == oeuvre.auteur.id %}selected{% endif %}>
-            {{ auteur.nom }}
+        <option value="{{ auteur['idAuteur'] }}"
+                {% if oeuvre and auteur['idAuteur'] == oeuvre['auteurIdOeuvre'] %}selected{% endif %}>
+            {{ auteur['nomAuteur'] }}
         </option>
     {% endfor %}
     {% if 'auteur' in errors %}
@@ -28,14 +28,14 @@
 </select>
 
 <label>photoe
-    <input name="photo"  type="text"  size="18" value="{{ oeuvre.photo if oeuvre else '' }}"/>
+    <input name="photo"  type="text"  size="18" value="{{ oeuvre['photoOeuvre'] if oeuvre else '' }}"/>
     {% if 'photo' in errors %}
         <small class="error">{{ errors['photo'] }}</small>
     {% endif %}
 </label>
 
 <label>prix
-    <input name="prix"  type="text"  size="18" value="{{ oeuvre.prix if oeuvre else '' }}"/>
+    <input name="prix"  type="text"  size="18" value="{{ oeuvre['prixOeuvre'] if oeuvre else '' }}"/>
     {% if 'prix' in errors %}
         <small class="error">{{ errors['prix'] }}</small>
     {% endif %}

@@ -1,6 +1,6 @@
 {% extends "layout.html.jj2" %}
 
-{% block title %}Modifier oeuvre : {{ oeuvre.id }}{% endblock %}
+{% block title %}Modifier oeuvre : {{ oeuvre['idAuteur'] }}{% endblock %}
 {% block content %}
     <div class="row">
         {% with messages = get_flashed_messages() %}

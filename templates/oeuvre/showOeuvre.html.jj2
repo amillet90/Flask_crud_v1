@@ -14,25 +14,25 @@
                 {% if oeuvres %}
                     {% for oeuvre in oeuvres %}
                         <tr><td>
-                            {{ oeuvre.auteur.nom }}
+                            {{ auteurs[oeuvre['auteurIdOeuvre']] }}
                         </td><td>
-                            {{ oeuvre.titre }}
+                            {{ oeuvre['titreOeuvre'] }}
 
                         </td><td>
-                            {{ oeuvre.dateParution }}
+                            {{ oeuvre['dateParutionOeuvre'] }}
                         </td><td>
-                            {{ oeuvre.prix }}
+                            {{ oeuvre['prixOeuvre'] }}
                         </td>
                         <td>
-                            {% if oeuvre.photo %}
-                                <img style="width:20px;height:20px" src="{{ url_for('static', filename='assets/images/' ~ oeuvre.photo) }}" alt="image de {{ oeuvre.titre }}" >
+                            {% if oeuvre['photoOeuvre'] %}
+                                <img style="width:20px;height:20px" src="{{ url_for('static', filename='assets/images/' ~ oeuvre.photo) }}" alt="image de {{ oeuvre['titreOeuvre'] }}" >
                             {% else %}
                                 <img style="width:20px;height:20px" src="{{ url_for('static', filename='assets/images/no_photo.jpeg') }}" alt="pas de photo" >
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('oeuvre.modifier', id=oeuvre.id) }}">modifier</a>
-                            <a href="{{ url_for('oeuvre.supprimer',id=oeuvre.id) }}">supprimer</a>
+                            <a href="{{ url_for('oeuvre.modifier', id=oeuvre['idOeuvre']) }}">modifier</a>
+                            <a href="{{ url_for('oeuvre.supprimer',id=oeuvre['idOeuvre']) }}">supprimer</a>
                         </td>
                         </tr>
                     {% endfor %}

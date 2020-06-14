@@ -19,7 +19,7 @@ def update(id, titre, date_parution, photo, prix, auteur_id):
 
     try:
         with connection.cursor() as cursor:
-            sql = ('UPDATE Auteur '
+            sql = ('UPDATE Oeuvre '
                    'SET '
                    'titreOeuvre = %s, '
                    'dateParutionOeuvre = %s, '
@@ -27,7 +27,7 @@ def update(id, titre, date_parution, photo, prix, auteur_id):
                    'prixOeuvre = %s, '
                    'auteurIdOeuvre = %s '
                    'WHERE idOeuvre = %s')
-            cursor.execute(sql, (id, titre, date_parution,
+            cursor.execute(sql, (titre, date_parution,
                                  photo, prix, auteur_id, id))
 
         connection.commit()

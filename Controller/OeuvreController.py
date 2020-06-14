@@ -4,24 +4,32 @@ import re
 
 from flask import *
 
-from app import db
-from Entity.Auteur import Auteur
-from Entity.Oeuvre import Oeuvre
+from Model import Auteur, Oeuvre
 
 bp = Blueprint('oeuvre', __name__, url_prefix='/oeuvre')
 
 
+def get_auteurs_by_id():
+    res = dict()
+
+    for a in Auteur.list():
+        res[a['idAuteur']] = a['nomAuteur']
+
+    return res
+
 @bp.route('/show')
 def show():
-    return render_template('oeuvre/showOeuvre.html.jj2', oeuvres=Oeuvre.query.all())
+    return render_template('oeuvre/showOeuvre.html.jj2', oeuvres=Oeuvre.list(), auteurs=get_auteurs_by_id())
 
 
 @bp.route('/supprimer/<int:id>', methods=['GET'])
 def supprimer(id):
-    oeuvre = Oeuvre.query.filter_by(id=id).first_or_404()
+    oeuvre = Oeuvre.get(id)
 
-    db.session.delete(oeuvre)
-    db.session.commit()
+    if not oeuvre:
+        abort(404)
+
+    Oeuvre.delete(id)
 
     return redirect(url_for('oeuvre.show'))
 
@@ -30,58 +38,54 @@ def supprimer(id):
 def ajouter():
     if request.method == 'GET':
         return render_template('oeuvre/addOeuvre.html.jj2',
-                               auteurs=Auteur.query.all(), errors=dict())
+                               auteurs=Auteur.list(), errors=dict())
 
     valid, errors = valider_form()
 
     if valid:
-        auteur = Auteur.query.filter_by(id=request.form['auteur_id']).first()
-
-        oeuvre = Oeuvre(titre=request.form['titre'],
-                        dateParution=request.form['dateParution'],
-                        photo=request.form['photo'],
-                        prix=request.form['prix'],
-                        auteur=auteur)
-        db.session.add(oeuvre)
-        db.session.commit()
+        oeuvre = Oeuvre.insert(request.form['titre'],
+                               request.form['dateParution'],
+                               request.form['photo'],
+                               request.form['prix'],
+                               request.form['auteur_id'])
 
         return redirect(url_for('oeuvre.show'))
     else:
         return render_template('oeuvre/addOeuvre.html.jj2',
-                               auteurs=Auteur.query.all(), errors=errors)
+                               auteurs=Auteur.list(), errors=errors)
 
 
 @bp.route('/modifier/<int:id>', methods=['GET', 'POST'])
 def modifier(id):
-    oeuvre = Oeuvre.query.filter_by(id=id).first_or_404()
+    oeuvre = Oeuvre.get(id)
+
+    if not oeuvre:
+        abort(404)
 
     if request.method == 'GET':
         return render_template('oeuvre/editOeuvre.html.jj2',
-                               oeuvre=oeuvre, auteurs=Auteur.query.all(),
+                               oeuvre=oeuvre, auteurs=Auteur.list(),
                                errors=dict())
 
     valid, errors = valider_form()
 
     if valid:
-        auteur = Auteur.query.filter_by(id=request.form['auteur_id']).first()
-
         photo = request.form['photo']
 
         if not photo:
             photo = 'no_photo.jpeg'
 
-        oeuvre.titre = request.form['titre']
-        oeuvre.dateParution = request.form['dateParution']
-        oeuvre.photo = photo
-        oeuvre.auteur = auteur
-        oeuvre.prix = request.form['prix']
-
-        db.session.commit()
+        Oeuvre.update(id,
+                      request.form['titre'],
+                      request.form['dateParution'],
+                      photo,
+                      request.form['prix'],
+                      request.form['auteur_id'])
 
         return redirect(url_for('oeuvre.show'))
     else:
         return render_template('oeuvre/editOeuvre.html.jj2',
-                               oeuvre=oeuvre, auteurs=Auteur.query.all(),
+                               oeuvre=oeuvre, auteurs=Auteur.list(),
                                errors=errors)
 
 
@@ -89,9 +93,9 @@ def valider_form():
     valid = True
     errors = dict()
 
-    auteur = Auteur.query.filter_by(id=request.form['auteur_id']).first()
+    auteur = Auteur.get(request.form['auteur_id'])
 
-    if auteur is None:
+    if not auteur:
         # flash("Auteur n'existe pas")
         errors['auteur'] = "Auteur n'existe pas"
         valid = False
